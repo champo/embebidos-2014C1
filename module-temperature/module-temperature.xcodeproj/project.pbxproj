@@ -9,6 +9,13 @@
 /* Begin PBXFileReference section */
 		4079525E0CEA38CC00E202DC /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		4079525F0CEA38CC00E202DC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		476B48B6193EBA4200627ED2 /* adc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = adc.c; sourceTree = "<group>"; };
+		476B48B7193EBA4200627ED2 /* adc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = adc.h; sourceTree = "<group>"; };
+		476B48B8193EBA4200627ED2 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
+		476B48B9193EBA4200627ED2 /* status.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = status.c; sourceTree = "<group>"; };
+		476B48BA193EBA4200627ED2 /* status.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = status.h; sourceTree = "<group>"; };
+		476B48BB193EBBBE00627ED2 /* twi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = twi.h; sourceTree = "<group>"; };
+		476B48BC193EBBD000627ED2 /* twi.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = twi.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -22,8 +29,15 @@
 		4079525D0CEA38CC00E202DC /* firmware */ = {
 			isa = PBXGroup;
 			children = (
+				476B48B6193EBA4200627ED2 /* adc.c */,
+				476B48B7193EBA4200627ED2 /* adc.h */,
+				476B48B8193EBA4200627ED2 /* common.h */,
+				476B48B9193EBA4200627ED2 /* status.c */,
+				476B48BA193EBA4200627ED2 /* status.h */,
 				4079525F0CEA38CC00E202DC /* Makefile */,
 				4079525E0CEA38CC00E202DC /* main.c */,
+				476B48BB193EBBBE00627ED2 /* twi.h */,
+				476B48BC193EBBD000627ED2 /* twi.c */,
 			);
 			path = firmware;
 			sourceTree = "<group>";
@@ -50,9 +64,15 @@
 /* Begin PBXProject section */
 		4079523D0CEA382200E202DC /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = 4079523E0CEA382200E202DC /* Build configuration list for PBXProject "TemplateProject" */;
+			attributes = {
+			};
+			buildConfigurationList = 4079523E0CEA382200E202DC /* Build configuration list for PBXProject "module-temperature" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 4079523B0CEA382200E202DC;
 			projectDirPath = "";
 			projectRoot = "";
@@ -80,7 +100,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4079523E0CEA382200E202DC /* Build configuration list for PBXProject "TemplateProject" */ = {
+		4079523E0CEA382200E202DC /* Build configuration list for PBXProject "module-temperature" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				407952400CEA382200E202DC /* Release */,

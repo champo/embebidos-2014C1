@@ -5,12 +5,13 @@
  */
 
 #include <avr/io.h>
+#include "common.h"
+#include "status.h"
 
 int main(void)
 {
-    /* insert your hardware initialization here */
-    for(;;){
-        /* insert your main loop code here */
-    }
-    return 0;   /* never reached */
+    status_init();
+    status_set(true);
+    
+    while (1);
 }
