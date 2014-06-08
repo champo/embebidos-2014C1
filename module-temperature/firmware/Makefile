@@ -20,7 +20,7 @@
 DEVICE     = atmega644p
 CLOCK      = 20000000
 PROGRAMMER = -c avrispmkII -P usb
-OBJECTS    = main.o status.o adc.o twi.o
+OBJECTS    = main.o status.o adc.o twi.o uart.o
 #FUSES      = -U hfuse:w:0xd9:m -U lfuse:w:0x24:m
 
 # ATMega8 fuse bits used above (fuse bits for other devices are different!):

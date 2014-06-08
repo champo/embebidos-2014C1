@@ -16,6 +16,8 @@
 		476B48BA193EBA4200627ED2 /* status.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = status.h; sourceTree = "<group>"; };
 		476B48BB193EBBBE00627ED2 /* twi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = twi.h; sourceTree = "<group>"; };
 		476B48BC193EBBD000627ED2 /* twi.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = twi.c; sourceTree = "<group>"; };
+		47BB100419400EB800322EF6 /* uart.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = uart.c; sourceTree = "<group>"; };
+		47BB100519400EB800322EF6 /* uart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uart.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -29,6 +31,8 @@
 		4079525D0CEA38CC00E202DC /* firmware */ = {
 			isa = PBXGroup;
 			children = (
+				47BB100419400EB800322EF6 /* uart.c */,
+				47BB100519400EB800322EF6 /* uart.h */,
 				476B48B6193EBA4200627ED2 /* adc.c */,
 				476B48B7193EBA4200627ED2 /* adc.h */,
 				476B48B8193EBA4200627ED2 /* common.h */,
