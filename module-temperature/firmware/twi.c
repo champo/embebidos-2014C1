@@ -8,12 +8,14 @@
 
 #include "twi.h"
 
+#include "uart.h"
+
 #include <avr/io.h>
 #include <util/twi.h>
 #include <avr/interrupt.h>
 
-#define SEND { TWCR |= (1 << TWINT); }
-#define WAIT { while(!(TWCR & (1 << TWINT))); }
+#define SEND { uart_send("--send"); TWCR |= (1 << TWINT); }
+#define WAIT { uart_send("--wait"); while(!(TWCR & (1 << TWINT))); }
 #define SEND_AND_WAIT { SEND; WAIT; }
 
 static uint8_t (*get_callback)(void) = 0;
@@ -29,14 +31,15 @@ void twi_init(uint8_t address)
     TWBR = 0;
     
     // Enable the TWI interface
-    TWCR = 1 << TWEA | 1 << TWEN;
+    TWCR = (1 << TWEA) | (1 << TWEN);
  
     // Prescale by 16
-    TWSR = 1 << TWPS1;
+    TWSR = (1 << TWPS1) | (1 << TWPS0);
 }
 
 bool send_address(uint8_t address, uint8_t write)
 {
+    uart_send("START");
     // Set the START flag
     TWCR |= 1 << TWSTA;
     
@@ -46,6 +49,7 @@ bool send_address(uint8_t address, uint8_t write)
         return false;
     }
     
+    uart_send("SLA+W");
     // Write the address + write byte
     TWDR = (address << 1) | write;
     TWCR |= (1 << TWINT);
@@ -68,7 +72,6 @@ bool send_address(uint8_t address, uint8_t write)
 
 bool twi_put(uint8_t address, uint8_t data)
 {
-
     send_address(address, TW_WRITE);
     
     // Send a PUT packet
@@ -100,6 +103,8 @@ bool twi_get(uint8_t address, uint8_t* data)
 {
     send_address(address, TW_WRITE);
     
+    uart_send("Send GET");
+    
     // Send a GET packet
     TWDR = 1;
     SEND_AND_WAIT;
@@ -108,6 +113,7 @@ bool twi_get(uint8_t address, uint8_t* data)
         return false;
     }
     
+    uart_send("Switch to MR");
     send_address(address, TW_READ);
     
     WAIT;
@@ -116,6 +122,7 @@ bool twi_get(uint8_t address, uint8_t* data)
         return false;
     }
     
+    uart_send("Read packet");
     // Read the data packet
     *data = TWDR;
     
