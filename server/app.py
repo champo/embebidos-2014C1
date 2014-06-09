@@ -70,7 +70,8 @@ def rules():
 
 @app.route('/rule', methods=['POST'])
 def add_rule():
-    rule = Rule(**request.values)
+    values = { key: request.values[key] for key in request.values }
+    rule = Rule(**values)
     db.session.add(rule)
     db.session.commit()
     return json.dumps(rule.as_dict())
