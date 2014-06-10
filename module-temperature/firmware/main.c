@@ -19,7 +19,8 @@
 static uint8_t measurement;
 
 static uint8_t get(void) {
-    return measurement;
+    return 0x1;
+    //return measurement;
 }
 
 int main(void)
@@ -32,6 +33,7 @@ int main(void)
     
     uart_init(1);
     twi_init(0x2);
+    twi_enable_interrupt();
     twi_register_get(get);
     
     measurement = 0;
@@ -44,7 +46,7 @@ int main(void)
         // T = adc * 256 / 1024 - 50
         // T = adc / 4 - 50
         measurement = (adc_read() / 4) - 50;
-        sprintf(str, "%d", measurement);
+        sprintf(str, "%dºC", measurement);
         
         uart_send(str);
         _delay_ms(500);

@@ -22,4 +22,6 @@ void twi_register_get(uint8_t (*get)(void));
 
 void twi_register_put(void (*put)(uint8_t data));
 
+void twi_enable_interrupt(void);
+
 #endif
