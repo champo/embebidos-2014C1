@@ -33,8 +33,8 @@ void twi_init(uint8_t address)
     // Set the address register
     TWAR = (address << 1) & (~0x1);
     
-    // Divide by 160 ~ 125kHz
-    TWBR = 72;
+    // Divide to ~100kHz
+    TWBR = 92;
     
     // Enable the TWI interface
     TWCR = (1 << TWINT) | (1 << TWEA) | (1 << TWEN);
@@ -48,10 +48,12 @@ void twi_enable_interrupt(void)
 
 bool send_address(uint8_t address, uint8_t write)
 {
+    int c = 0;
+begin:
     uart_send("START");
     // Set the START flag
     
-    SEND_AND_WAIT(0, 1 << TWSTA);
+    SEND_AND_WAIT(1, 1 << TWSTA);
     
     if (TW_STATUS != TW_START && TW_STATUS != TW_REP_START) {
         DUMP_ERROR();
@@ -66,16 +68,27 @@ bool send_address(uint8_t address, uint8_t write)
     
     // Write the address + write byte
     TWDR = (address << 1) | write;
-    SEND_AND_WAIT(0, 0);
+    SEND_AND_WAIT(1, 0);
     
     uint8_t ack;
+    uint8_t nack;
     if (write == TW_WRITE) {
         ack = TW_MT_SLA_ACK;
+        nack = TW_MT_SLA_NACK;
     } else {
         ack = TW_MR_SLA_ACK;
+        nack = TW_MR_SLA_NACK;
     }
     
-    if (TW_STATUS != ack) {
+    if (TW_STATUS == nack) {
+        c++;
+        if (c > 3) {
+            DUMP_ERROR();
+            return false;
+        } else {
+            goto begin;
+        }
+    } else if (TW_STATUS != ack) {
         DUMP_ERROR();
         return false;
     }
@@ -89,7 +102,7 @@ bool twi_put(uint8_t address, uint8_t data)
     
     // Send a PUT packet
     TWDR = 0;
-    SEND_AND_WAIT(0, 0);
+    SEND_AND_WAIT(1, 0);
     
     if (TW_STATUS != TW_MT_DATA_ACK) {
         return false;
@@ -97,7 +110,7 @@ bool twi_put(uint8_t address, uint8_t data)
     
     // Send the data packet
     TWDR = data;
-    SEND_AND_WAIT(0, 0);
+    SEND_AND_WAIT(1, 0);
     
     if (TW_STATUS != TW_MT_DATA_ACK) {
         return false;
@@ -119,7 +132,7 @@ bool twi_get(uint8_t address, uint8_t* data)
     
     // Send a GET packet
     TWDR = 1;
-    SEND_AND_WAIT(0, 0);
+    SEND_AND_WAIT(1, 0);
     
     if (TW_STATUS != TW_MT_DATA_ACK) {
         DUMP_ERROR();
@@ -129,6 +142,7 @@ bool twi_get(uint8_t address, uint8_t* data)
     uart_send("Switch to MR");
     if (!send_address(address, TW_READ)) {
         uart_send("MR send_address failed");
+        STOP();
         return false;
     }
     
@@ -169,24 +183,24 @@ static char str[20];
 ISR(TWI_vect, ISR_BLOCK) {
     
     status_set(true);
-    uart_send("TWI ISR");
-    DUMP_ERROR();
+    //uart_send("TWI ISR");
+    //DUMP_ERROR();
     if (TW_STATUS == TW_SR_SLA_ACK) {
         
-        uart_send("Got my SLA+W");
+        //uart_send("Got my SLA+W");
         command = 0xFF;
         
     } else if (TW_STATUS == TW_ST_SLA_ACK) {
         
         if (command == 0x0) {
-            uart_send("Got into a ST with a PUT --- wwwwat");
+            //uart_send("Got into a ST with a PUT --- wwwwat");
         } else {
         
-            uart_send("Got a GET");
+            //uart_send("Got a GET");
             if (get_callback) {
                 TWDR = get_callback();
             } else {
-                uart_send("No callback, sending 0xFF");
+                //uart_send("No callback, sending 0xFF");
                 TWDR = 0xFF;
             }
             
@@ -200,23 +214,23 @@ ISR(TWI_vect, ISR_BLOCK) {
         if (command == 0xFF) {
             command = TWDR;
             
-            sprintf(str, "Got command = %x", command);
-            uart_send(str);
+            //sprintf(str, "Got command = %x", command);
+            //uart_send(str);
             
         } else if (command == 0x0) {
             
-            uart_send("Got a PUT");
+            //uart_send("Got a PUT");
             if (put_callback) {
                 put_callback(TWDR);
             }
             
         } else {
-            uart_send("WAAAAAAT -- Got a DATA ACK on a GET");
+            //uart_send("WAAAAAAT -- Got a DATA ACK on a GET");
         }
         
     } else if (TW_STATUS == TW_ST_DATA_ACK) {
         
-        uart_send("WTF - Got DATA ACK on ST");
+        //uart_send("WTF - Got DATA ACK on ST");
         
     }
     
