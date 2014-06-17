@@ -32,7 +32,7 @@ int main(void)
     status_set(false);
     
     uart_init(1);
-    twi_init(0x2);
+    twi_init(0xC);
     twi_enable_interrupt();
     twi_register_get(get);
     
