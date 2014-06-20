@@ -16,11 +16,10 @@
 #include "adc.h"
 
 
-static uint8_t measurement;
+volatile static uint8_t measurement;
 
 static uint8_t get(void) {
-    return 0x1;
-    //return measurement;
+    return measurement;
 }
 
 int main(void)
@@ -38,15 +37,18 @@ int main(void)
     
     measurement = 0;
     
+    sei();
+    
     while (1) {
         
         // VRef is 2.56V
-        // at T = 0, VOut = 0.5V. VOut scales at 10mV / ºC
-        // T = ((adc * (2.56 / 1024)) - 0.5) * 100
-        // T = adc * 256 / 1024 - 50
-        // T = adc / 4 - 50
-        measurement = (adc_read() / 4) - 50;
-        sprintf(str, "%dºC", measurement);
+        // at T = 0, VOut = 0V. VOut scales at 10mV / ºC
+        // T = adc * (2.56 / 1024) * 100
+        // T = adc * 256 / 1024
+        // T = adc / 4
+        uint16_t read = adc_read();
+        measurement = read / 4;
+        sprintf(str, "%dºC (raw = %d)", measurement, read);
         
         uart_send(str);
         _delay_ms(500);
