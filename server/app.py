@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import os
 import sys
@@ -156,3 +156,28 @@ def homepage():
         rules=Rule.query.all()
     );
 
+@app.route('/module_cron')
+def module_cron():
+    current_datetime = datetime.now()
+    for module in Module.query.all():
+        output = os.popen('python get_state.py %d' % (module.i2c_id)).read()
+        module.value = output
+        last_update = current_datetime
+        db.session.add(rule)
+        db.session.commit()
+
+@app.route('/rule_cron')
+def rule_cron():
+    current_datetime = datetime.now()
+    current_time = current_datetime.strftime('')
+    for module in Module.query.all():
+        for rule in Rule.query.filter_by(output_module=module.id).order_by(priority):
+            if current_time >= rule.time_from and current_time < rule.time_to:
+                if ((rule.less_than and module.value < rule.value_threshold)
+                    or (not rule.less_than and module.value > rule.value_threshold)):
+                    if rule.last_executed - current_datetime() > timedelta(minutes=10):
+                        rule.last_executed = current_datetime
+                        os.system('python module_send.py %d %d' % (module.i2c_id, rule.switch_to_value))
+                        db.session.add(rule)
+                        db.session.commit()
+                        break
