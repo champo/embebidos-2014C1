@@ -9,6 +9,9 @@ from flask import Flask, request, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
 
 import config
+import serial_interface
+
+serial = serial_interface.SerialInterface('/dev/tty.usbmodem1411', 9600)
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -160,7 +163,9 @@ def homepage():
 def module_cron():
     current_datetime = datetime.now()
     for module in Module.query.all():
-        output = os.popen('python get_state.py %d' % (module.i2c_id)).read()
+        with serial:
+            output = serial.get(module.i2c_id)
+
         module.value = output
         last_update = current_datetime
         db.session.add(rule)
@@ -177,7 +182,10 @@ def rule_cron():
                     or (not rule.less_than and module.value > rule.value_threshold)):
                     if rule.last_executed - current_datetime() > timedelta(minutes=10):
                         rule.last_executed = current_datetime
-                        os.system('python module_send.py %d %d' % (module.i2c_id, rule.switch_to_value))
+
+                        with serial:
+                            serial.put(module.i2c_id, rule.switch_to_value)
+
                         db.session.add(rule)
                         db.session.commit()
                         break
