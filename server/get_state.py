@@ -1,18 +1,31 @@
 import serial
 import struct
 import sys
+import time
 
-DEVICE = '/dev/tty.SLAB_USBtoUART'
+DEVICE = '/dev/tty.usbmodem1411'
 SPEED = 9600
 
 def main(args):
     if len(args) != 1:
         return usage()
     i2c_address = int(args[0])
-    ser = serial.Serial(DEVICE, SPEED, timeout = 1)
-    ser.write(struct.pack('BB', i2c_address, 0))
+
+    ser = serial.Serial()
+    ser.port = DEVICE
+    ser.baudrate = SPEED
+    ser.open()
+
+# Wait for the arduino to reset
+    time.sleep(2)
+
+    ser.write([i2c_address])
+    ser.write([1])
+
     ser.flush()
-    print '%d' % (struct.unpack('B', ser.read(1))[0])
+
+    out = ser.read(1)
+    print '%d' % (struct.unpack('B', out)[0])
     ser.close()
 
 def usage():

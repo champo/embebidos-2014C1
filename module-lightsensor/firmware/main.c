@@ -9,6 +9,7 @@
 #include "uart.h"
 #include "twi.h"
 
+#include <avr/interrupt.h>
 #include <util/delay.h>
 #include <stdio.h>
 
@@ -22,14 +23,16 @@ int main(void)
 {
     status_init();
     
+    uart_init(0);
+    uart_send("Ready!");
+    
     twi_init(0xB);
     twi_register_get(get);
     twi_enable_interrupt();
     
-    uart_init(0);
-    uart_send("Ready!");
-    
     adc_init();
+    
+    sei();
     
     char m[40];
     while (1) {

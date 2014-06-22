@@ -23,29 +23,37 @@ void setup()
   }
   
   Wire.begin(0xA);                // join i2c bus with address 0x
+  
+  pinMode(LED_BUILTIN, OUTPUT); 
 }
 
 void loop()
 {
-  if (Serial.available() == 2) {
-    int cmd = Serial.read();
-    int address = Serial.read();
+    
+  if (Serial.available() >= 2) {
+    
+        digitalWrite(LED_BUILTIN, HIGH);
 
+    int address = Serial.read();
+    int cmd = Serial.read();
+    
+    Serial.write('a');
+    return;
+ 
     Wire.beginTransmission(address);
     Wire.write(cmd);
     if (cmd == 0x0) {
-      while (Serial.available() != 1);
+      while (Serial.available() == 0);
       
       Wire.write(Serial.read());   
       Wire.endTransmission();
     } else {
       Wire.endTransmission(false);
       Wire.requestFrom(address, 1, true);
-      while (Wire.available() != 1);
+      while (Wire.available() == 0);
 
       Serial.write(Wire.read());
     }
 
   }
-  
 }
