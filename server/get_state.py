@@ -1,4 +1,5 @@
 import serial
+import struct
 import sys
 
 DEVICE = '/dev/tty.SLAB_USBtoUART'
@@ -7,11 +8,11 @@ SPEED = 9600
 def main(args):
     if len(args) != 1:
         return usage()
-    i2c_address = args[0]
+    i2c_address = int(args[0])
     ser = serial.open(DEVICE, SPEED, timeout = 1)
-    ser.write() # TODO: What should I write?
+    ser.write(struct.pack('BB', i2c_address, 0))
     ser.flush()
-    print '%d' % ser.read(1)
+    print '%d' % (struct.unpack('B', ser.read(1))[0])
     ser.close()
 
 def usage():

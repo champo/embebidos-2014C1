@@ -181,3 +181,16 @@ def rule_cron():
                         db.session.add(rule)
                         db.session.commit()
                         break
+
+@app.route('/add', methods=['GET'])
+def add_rule_form():
+    return render_template('add.html')
+
+@app.route('/add', methods=['POST'])
+def add_rule_process():
+    values = { key: request.values[key] for key in request.values }
+    rule = Rule(**values)
+    db.session.add(rule)
+    db.session.commit()
+    return redirect('/')
+
