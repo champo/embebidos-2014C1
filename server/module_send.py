@@ -10,7 +10,7 @@ def main(args):
         return usage()
     i2c_address = int(args[0])
     value_to_send = int(args[1])
-    ser = serial.open(DEVICE, SPEED, timeout = 1)
+    ser = serial.Serial(DEVICE, SPEED, timeout = 1)
     ser.write(struct.pack('BBB', i2c_address, 1, value_to_send))
     ser.flush()
     ser.close()
