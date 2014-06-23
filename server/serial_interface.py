@@ -56,8 +56,6 @@ class SerialInterface(object):
 
         return result
 
-
-
     def put(self, address, value):
 
         with self.__lock:
@@ -67,11 +65,12 @@ class SerialInterface(object):
                 serial = self.serial()
 
                 try:
-                    serial.write([address, 0, value])
+                    serial.write([address, 0, int(value)])
                     serial.flush()
 
                     result = True
 
-                except:
+                except Exception as e:
+                    print e
                     self.__clean()
 

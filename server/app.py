@@ -148,7 +148,8 @@ def delete_rule(rule_id):
 
 @app.route('/module/<int:module_id>', methods=['PUT'])
 def send_data(module_id):
-    os.system('python module_send %d %d'%(module_id, request.values['value']))
+    with serial:
+        serial.put(module_id, request.values['value'])
     return ''
 
 @app.route('/index.html')
