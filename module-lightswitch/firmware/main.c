@@ -18,9 +18,11 @@
 #include <avr/io.h>
 #include "common.h"
 
-#define SWITCH_MASK PC2
+#define SWITCH_MASK (1 << 2)
 #define RELAY_MASK (1 << 3)
 
+
+void set_light(bool);
 
 static uint8_t measurement;
 
@@ -28,39 +30,54 @@ static uint8_t get(void) {
     return measurement;
 }
 
+static void put(uint8_t value) {
+    set_light(!!value);
+}
+
+void set_light(bool on)
+{
+    if (on) {
+        PORTA |= RELAY_MASK;
+    } else {
+        PORTA &= ~RELAY_MASK;
+    }
+    
+    measurement = on;
+}
+
 int main(void)
 {
     status_init();
-    adc_init();
     
+    // Set relay port to out and switch port to in
+    DDRA = RELAY_MASK | (DDRA & (~SWITCH_MASK));
+    PORTA |= SWITCH_MASK;
     
     uart_init(1);
     twi_init(0xD);
     twi_enable_interrupt();
     twi_register_get(get);
+    twi_register_put(put);
     
-    measurement = 0;
-    
-    // Ports PC2, PC3
-    
-    _delay_ms(300);
+    // Ports PA2, PA3
     
     // Enable write on relay leg
-    DDRC |= RELAY_MASK;
     
     // Turn relay on
-    PORTC |= RELAY_MASK;
-    
-    for (measurement = 0; measurement < 10; measurement++);
-    
-    //PORTC = (PORTC & ~RELAY_MASK);
-    
+    set_light(false);
     status_set(true);
     
-    //PORTD = ((~status) << 7) | (PORTD & ~STATUS_MASK);
+    sei();
     
+    bool status = true;
+    status_set(true);
     while (1) {
-        
+        uint8_t pressed = !(PINA & SWITCH_MASK);
+        if (pressed) {
+            set_light(!measurement);
+            
+            _delay_ms(500);
+        }
         
     }
     
