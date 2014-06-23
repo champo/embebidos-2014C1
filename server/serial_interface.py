@@ -25,12 +25,15 @@ class SerialInterface(object):
         if self.__serial is not None:
             return self.__serial
 
+        print "New serial"
         self.__serial = serial.Serial(self.__port, self.__buad_rate)
 # Arduino resets on connect
-        sleep(1)
+        sleep(2)
+        return self.__serial
 
     def __clean(self):
         try:
+            print "__clean"
             self.__serial.close()
         finally:
             self.__serial = None
@@ -46,8 +49,9 @@ class SerialInterface(object):
                     serial.write([address, 1])
                     serial.flush()
 
-                    result = serial.read(1)
-                except:
+                    result = struct.unpack('B', serial.read(1))[0]
+                except Exception as e:
+                    print e
                     self.__clean()
 
         return result

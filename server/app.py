@@ -11,7 +11,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 import config
 import serial_interface
 
-serial = serial_interface.SerialInterface('/dev/tty.usbmodem1411', 9600)
+serial = serial_interface.SerialInterface('/dev/tty.usbmodem1421', 9600)
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -19,7 +19,7 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 
 ILUMINACION = [
-    'Sin datos',
+    'Oscuridad total',
     'Muy oscuro',
     'Oscuro',
     'Baja luz',
@@ -68,7 +68,7 @@ class Module(db.Model):
         if self.type == 'Temperatura':
             return '%d °C' % self.value
         elif self.type == 'Iluminacion':
-            return ILUMINACION[self.value]
+            return '%d/100' % (self.value, )
         elif self.type == 'Persiana':
             if self.value == 0:
                 return 'Cerrada'
@@ -167,8 +167,8 @@ def module_cron():
             output = serial.get(module.i2c_id)
 
         module.value = output
-        last_update = current_datetime
-        db.session.add(rule)
+        module.last_update = current_datetime
+        db.session.add(module)
         db.session.commit()
 
 @app.route('/rule_cron')
