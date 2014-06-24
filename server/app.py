@@ -74,7 +74,7 @@ class Module(db.Model):
         elif self.type == 'Iluminacion':
             return '%d / 100' % self.value
         elif self.type == 'Persiana':
-            return '%d%% abierta' % self.value
+            return '%d%% cerrada' % self.value
         return '<sin datos>'
     def __repr__(self):
         return '<Module %r>' % (self.name)
@@ -179,22 +179,23 @@ def module_cron():
         module.last_update = current_datetime
         db.session.add(module)
         db.session.commit()
-    return redirect('/')
+    return ''
 
 @app.route('/rule_cron')
 def rule_cron():
     current_datetime = datetime.now()
     current_time = current_datetime.strftime('%H:%M')
     for module in Module.query.all():
-        for rule in Rule.query.filter_by(output_module=module.id).order_by('priority'):
+        for rule in Rule.query.filter_by(sensor_module=module.id).order_by('priority'):
             if current_time >= rule.time_from and current_time < rule.time_to:
-                if ((rule.less_than and module.value < rule.value_threshold)
+                if ((rule.less_than and module.value <= rule.value_threshold)
                     or (not rule.less_than and module.value > rule.value_threshold)):
-                    if not rule.last_executed or current_datetime - rule.last_executed > timedelta(minutes=10):
+                    if True or not rule.last_executed or current_datetime - rule.last_executed > timedelta(minutes=10):
                         rule.last_executed = current_datetime
 
+                        output_module = Module.query.get(rule.output_module)
                         with serial:
-                            serial.put(module.i2c_id, rule.switch_to_value)
+                            serial.put(output_module.i2c_id, rule.switch_to_value)
 
                         db.session.add(rule)
                         db.session.commit()
