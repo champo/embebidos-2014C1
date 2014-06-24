@@ -1,0 +1,150 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		885D42A31950958C00C61E75 /* .DS_Store */ = {isa = PBXFileReference; lastKnownFileType = file; path = .DS_Store; sourceTree = "<group>"; };
+		885D42A41950958C00C61E75 /* common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
+		885D42A51950958C00C61E75 /* drivers */ = {isa = PBXFileReference; lastKnownFileType = folder; path = drivers; sourceTree = "<group>"; };
+		885D42A91950958C00C61E75 /* m */ = {isa = PBXFileReference; lastKnownFileType = text; path = m; sourceTree = "<group>"; };
+		885D42AA1950958C00C61E75 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		885D42AB1950958C00C61E75 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		885D42AC1950958C00C61E75 /* shell */ = {isa = PBXFileReference; lastKnownFileType = folder; path = shell; sourceTree = "<group>"; };
+		885D42AD1950958C00C61E75 /* unused */ = {isa = PBXFileReference; lastKnownFileType = folder; path = unused; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		885D429D1950958C00C61E75 = {
+			isa = PBXGroup;
+			children = (
+				885D42A31950958C00C61E75 /* .DS_Store */,
+				885D42A41950958C00C61E75 /* common.h */,
+				885D42A51950958C00C61E75 /* drivers */,
+				885D42A91950958C00C61E75 /* m */,
+				885D42AA1950958C00C61E75 /* main.c */,
+				885D42AB1950958C00C61E75 /* Makefile */,
+				885D42AC1950958C00C61E75 /* shell */,
+				885D42AD1950958C00C61E75 /* unused */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		885D42A21950958C00C61E75 /* firmware */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 885D42AF1950958C00C61E75 /* Build configuration list for PBXLegacyTarget "firmware" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = "/Users/maximo/Desktop/embebidos 2/embebidos/firmware";
+			dependencies = (
+			);
+			name = firmware;
+			passBuildSettingsInEnvironment = 1;
+			productName = firmware;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		885D429E1950958C00C61E75 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+			};
+			buildConfigurationList = 885D42A11950958C00C61E75 /* Build configuration list for PBXProject "firmware 2" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 885D429D1950958C00C61E75;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				885D42A21950958C00C61E75 /* firmware */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		885D429F1950958C00C61E75 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		885D42A01950958C00C61E75 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+		885D42B01950958C00C61E75 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = firmware;
+			};
+			name = Debug;
+		};
+		885D42B11950958C00C61E75 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = firmware;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		885D42A11950958C00C61E75 /* Build configuration list for PBXProject "firmware 2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				885D429F1950958C00C61E75 /* Debug */,
+				885D42A01950958C00C61E75 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		885D42AF1950958C00C61E75 /* Build configuration list for PBXLegacyTarget "firmware" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				885D42B01950958C00C61E75 /* Debug */,
+				885D42B11950958C00C61E75 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 885D429E1950958C00C61E75 /* Project object */;
+}
