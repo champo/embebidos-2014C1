@@ -65,15 +65,16 @@ class Module(db.Model):
         return time_since(self.last_update)
     @property
     def desc_value(self):
-        if self.type == 'Temperatura':
+        if self.type == 'Aire':
+            return 'Encendido' if self.value else 'Apagado'
+        elif self.type == 'Lampara':
+            return 'Encendida' if self.value else 'Apagada'
+        elif self.type == 'Temperatura':
             return '%d C' % self.value
         elif self.type == 'Iluminacion':
             return '%d / 100' % self.value
-        elif self.type == 'Cortina':
-            if self.value == 0:
-                return 'Cerrada'
-            if self.value == 1:
-                return 'Abierta'
+        elif self.type == 'Persiana':
+            return '%d%% abierta' % self.value
         return '<sin datos>'
     def __repr__(self):
         return '<Module %r>' % (self.name)
@@ -178,6 +179,7 @@ def module_cron():
         module.last_update = current_datetime
         db.session.add(module)
         db.session.commit()
+    return redirect('/')
 
 @app.route('/rule_cron')
 def rule_cron():
