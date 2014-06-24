@@ -5,7 +5,7 @@ import json
 import os
 import sys
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 from flask.ext.sqlalchemy import SQLAlchemy
 
 import config
@@ -142,15 +142,21 @@ def add_rule():
 
 @app.route('/rule/<int:rule_id>', methods=['DELETE'])
 def delete_rule(rule_id):
-    db.session.delete(Rule.query.filter_by(id=rule_id))
+    db.session.delete(Rule.query.get(rule_id))
     db.session.commit()
-    return ''
+    return redirect('/')
+
+@app.route('/rule/delete/<int:rule_id>', methods=['POST'])
+def delete_rule_alias(rule_id):
+    db.session.delete(Rule.query.get(rule_id))
+    db.session.commit()
+    return redirect('/')
 
 @app.route('/module/<int:module_id>', methods=['PUT'])
 def send_data(module_id):
     with serial:
         serial.put(module_id, request.values['value'])
-    return ''
+    return redirect('/')
 
 @app.route('/index.html')
 @app.route('/')
@@ -198,6 +204,8 @@ def add_rule_form():
 @app.route('/add', methods=['POST'])
 def add_rule_process():
     values = { key: request.values[key] for key in request.values }
+    values['less_than'] = values['less'] == 'Menor que'
+    del values['less']
     rule = Rule(**values)
     db.session.add(rule)
     db.session.commit()

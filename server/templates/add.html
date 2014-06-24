@@ -20,42 +20,41 @@
         <h1>Domotica</h1>
       </div>
 
-      <form class="form-horizontal" action="POST">
-      <fieldset>
+      <form class="form-horizontal" role="form" method="POST">
 
       <!-- Form Name -->
       <legend>Añadir Regla</legend>
 
       <!-- Text input-->
-      <div class="control-group">
-        <label class="control-label" for="name">Nombre:</label>
-        <div class="controls">
-          <input id="name" name="name" placeholder="" class="input-xlarge" required="" type="text">
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="name">Nombre:</label>
+        <div class="col-sm-10">
+          <input id="name" name="name" placeholder="" class="form-control" required="" type="text">
         </div>
       </div>
 
       <!-- Text input-->
-      <div class="control-group">
-        <label class="control-label" for="sensor_module">Módulo Sensor:</label>
-        <div class="controls">
-          <input id="sensor_module" name="sensor_module" placeholder="placeholder" class="input-xlarge" type="text">
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="sensor_module">Módulo Sensor:</label>
+        <div class="col-sm-10">
+          <input id="sensor_module" name="sensor_module" placeholder="" class="form-control" type="text">
           <p class="help-block">ingresar el id del sensor</p>
         </div>
       </div>
       <!-- Text input-->
-      <div class="control-group">
-        <label class="control-label" for="output_module">Módulo Control:</label>
-        <div class="controls">
-          <input id="output_module" name="output_module" placeholder="placeholder" class="input-xlarge" type="text">
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="output_module">Módulo Control:</label>
+        <div class="col-sm-10">
+          <input id="output_module" name="output_module" placeholder="" class="form-control" type="text">
           <p class="help-block">ingresar el id del controlador</p>
         </div>
       </div>
 
       <!-- Select Basic -->
-      <div class="control-group">
-        <label class="control-label" for="time_from">Desde:</label>
-        <div class="controls">
-          <select id="time_from" name="time_from" class="input-xlarge">
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="time_from">Desde:</label>
+        <div class="col-sm-10">
+          <select id="time_from" name="time_from" class="form-control">
             <option value="0000">00:00</option>
             <option value="0100">01:00</option>
             <option value="0200">02:00</option>
@@ -84,10 +83,10 @@
         </div>
       </div>
       <!-- Select Basic -->
-      <div class="control-group">
-        <label class="control-label" for="time_to">Hasta:</label>
-        <div class="controls">
-          <select id="time_to" name="time_to" class="input-xlarge">
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="time_to">Hasta:</label>
+        <div class="col-sm-10">
+          <select id="time_to" name="time_to" class="form-control">
             <option value="0000">00:00</option>
             <option value="0100">01:00</option>
             <option value="0200">02:00</option>
@@ -117,9 +116,9 @@
       </div>
 
       <!-- Multiple Radios -->
-      <div class="control-group">
-        <label class="control-label" for="less">Relación con Límite:</label>
-        <div class="controls">
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="less">Relación con Límite:</label>
+        <div class="col-sm-10">
           <label class="radio" for="less-0">
             <input name="less" id="less-0" value="Menor que" checked="checked" type="radio">
             Menor que
@@ -131,25 +130,25 @@
         </div>
       </div>
       <!-- Text input-->
-      <div class="control-group">
-        <label class="control-label" for="value_threshold">Límite:</label>
-        <div class="controls">
-          <input id="value_threshold" name="value_threshold" placeholder="" class="input-xlarge" required="" type="number">
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="value_threshold">Límite:</label>
+        <div class="col-sm-10">
+          <input id="value_threshold" name="value_threshold" placeholder="" class="form-control" required="" type="number">
         </div>
       </div>
       <!-- Text input-->
-      <div class="control-group">
-        <label class="control-label" for="switch_to_value">Valor a establecer:</label>
-        <div class="controls">
-          <input id="switch_to_value" name="switch_to_value" placeholder="" class="input-xlarge" required="" type="number">
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="switch_to_value">Valor a establecer:</label>
+        <div class="col-sm-10">
+          <input id="switch_to_value" name="switch_to_value" placeholder="" class="form-control" required="" type="number">
         </div>
       </div>
 
       <!-- Select Basic -->
-      <div class="control-group">
-        <label class="control-label" for="priority">Prioridad:</label>
-        <div class="controls">
-          <select id="priority" name="priority" class="input-xlarge">
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="priority">Prioridad:</label>
+        <div class="col-sm-10">
+          <select id="priority" name="priority" class="form-control">
             <option>1</option>
             <option>2</option>
             <option>3</option>
@@ -164,10 +163,12 @@
         </div>
       </div>
 
-      </fieldset>
+      <input type="submit" class="btn btn-primary"/>
       </form>
 
     </div> <!-- /container -->
+    <br/>
+    <br/>
 
   </body>
 </html>

@@ -12,6 +12,6 @@
     <author email="eordano@itba.edu.ar" href="https://eordano.com">
         ITBA Alumns
     </author>
-    <content src="index.html" />
+    <content src="http://192.168.1.104:5000/" />
     <access origin="*" />
 </widget>

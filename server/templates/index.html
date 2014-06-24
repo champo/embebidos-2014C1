@@ -67,7 +67,7 @@
       <h3>Reglas Activas</h3>
       <p>Las siguientes reglas están configuradas en su casa:</p>
       <form role="form" action="/add" method="GET" class="form-inline">
-        <button type="submit" class="btn">Añadir</button>
+        <button type="submit" class="btn btn-primary">Añadir</button>
       </form>
       <table class="table">
         <thead>
@@ -82,7 +82,7 @@
             <td>{{ rule.times }}</td>
             <td>{{ rule.sensors }}</td>
             <td>
-              <form role="form" action="/rule/{{ rule.id }}" method="DELETE" class="form-inline">
+              <form role="form" action="/rule/delete/{{ rule.id }}" method="POST" class="form-inline">
                 <button type="submit" class="btn btn-danger">Eliminar</button>
               </form>
           </tr>
