@@ -31,7 +31,8 @@ static uint8_t get(void) {
 }
 
 static void put(uint8_t value) {
-    set_light(!!value);
+    status_set(value);
+    set_light(value ? true : false);
 }
 
 void set_light(bool on)

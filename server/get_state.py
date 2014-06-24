@@ -3,7 +3,7 @@ import struct
 import sys
 import time
 
-DEVICE = '/dev/tty.usbmodem1411'
+DEVICE = '/dev/tty.usbmodem1421'
 SPEED = 9600
 
 def main(args):
@@ -17,13 +17,16 @@ def main(args):
     ser.open()
 
 # Wait for the arduino to reset
+    print "Sleep"
     time.sleep(2)
 
     ser.write([i2c_address])
     ser.write([1])
 
+    print "Flush"
     ser.flush()
 
+    print "Reading..."
     out = ser.read(1)
     print '%d' % (struct.unpack('B', out)[0])
     ser.close()

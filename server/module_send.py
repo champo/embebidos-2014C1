@@ -1,8 +1,9 @@
 import serial
 import struct
 import sys
+import time
 
-DEVICE = '/dev/tty.SLAB_USBtoUART'
+DEVICE = '/dev/tty.usbmodem1421'
 SPEED = 9600
 
 def main(args):
