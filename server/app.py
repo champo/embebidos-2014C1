@@ -59,17 +59,17 @@ class Module(db.Model):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     @property
     def desc(self):
-        return '%s %s' % (self.type, self.name)
+        return '(%s) %s' % (self.type, self.name)
     @property
     def time_since(self):
         return time_since(self.last_update)
     @property
     def desc_value(self):
         if self.type == 'Temperatura':
-            return '%d °C' % self.value
+            return '%d C' % self.value
         elif self.type == 'Iluminacion':
-            return '%d/100' % (self.value, )
-        elif self.type == 'Persiana':
+            return '%d / 100' % self.value
+        elif self.type == 'Cortina':
             if self.value == 0:
                 return 'Cerrada'
             if self.value == 1:
@@ -198,6 +198,12 @@ def rule_cron():
                         db.session.commit()
                         break
     return ''
+
+@app.route('/module/put/<int:i2c>', methods=['POST'])
+def send_to_module(i2c):
+    with serial:
+        serial.put(i2c, request.values['value'])
+    return redirect('/')
 
 @app.route('/add', methods=['GET'])
 def add_rule_form():

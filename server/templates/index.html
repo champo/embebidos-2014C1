@@ -37,7 +37,7 @@
             <td>{{ sensor.time_since }}</td>
             <td>
               {% if sensor.type == 'Lampara' %}
-              <form role="form" action="/module/{{ sensor.i2c }}" method="PUT" class="form-inline">
+              <form role="form" action="/module/put/{{ sensor.i2c_id }}" method="POST" class="form-inline">
                 <div class="form-group">
                   <select class="form-control" name="value">
                     <option value="0">Apagar</option>
@@ -47,12 +47,23 @@
                 </div>
               </form>
               {% endif %}
-              {% if sensor.type == 'Cortina' %}
-              <form role="form" action="/module/{{ sensor.i2c }}" method="PUT" class="form-inline">
+              {% if sensor.type == 'Persiana' %}
+              <form role="form" action="/module/put/{{ sensor.i2c_id }}" class="form-inline" method="POST">
                 <div class="form-group">
                   <select class="form-control" name="value">
                     <option value="0">Subir</option>
                     <option value="1">Bajar</option>
+                  </select>
+                  <button type="submit" class="btn">Enviar</button>
+                </div>
+              </form>
+              {% endif %}
+              {% if sensor.type == 'Aire' %}
+              <form role="form" action="/module/put/{{ sensor.i2c_id }}" class="form-inline" method="POST">
+                <div class="form-group">
+                  <select class="form-control" name="value">
+                    <option value="0">Apagar</option>
+                    <option value="1">Encender</option>
                   </select>
                   <button type="submit" class="btn">Enviar</button>
                 </div>
