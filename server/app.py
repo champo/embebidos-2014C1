@@ -91,6 +91,7 @@ class Rule(db.Model):
     value_threshold = db.Column(db.Integer)
     switch_to_value = db.Column(db.Integer)
     priority = db.Column(db.Integer)
+    last_executed = db.Column(db.DateTime)
     sensor = None
     output = None
 
@@ -181,13 +182,13 @@ def module_cron():
 @app.route('/rule_cron')
 def rule_cron():
     current_datetime = datetime.now()
-    current_time = current_datetime.strftime('')
+    current_time = current_datetime.strftime('%H:%M')
     for module in Module.query.all():
-        for rule in Rule.query.filter_by(output_module=module.id).order_by(priority):
+        for rule in Rule.query.filter_by(output_module=module.id).order_by('priority'):
             if current_time >= rule.time_from and current_time < rule.time_to:
                 if ((rule.less_than and module.value < rule.value_threshold)
                     or (not rule.less_than and module.value > rule.value_threshold)):
-                    if rule.last_executed - current_datetime() > timedelta(minutes=10):
+                    if not rule.last_executed or current_datetime - rule.last_executed > timedelta(minutes=10):
                         rule.last_executed = current_datetime
 
                         with serial:
@@ -196,6 +197,7 @@ def rule_cron():
                         db.session.add(rule)
                         db.session.commit()
                         break
+    return ''
 
 @app.route('/add', methods=['GET'])
 def add_rule_form():
