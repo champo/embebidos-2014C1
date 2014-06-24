@@ -15,6 +15,12 @@
 		885D42931950957E00C61E75 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		88F23DDE1958EBC300F55181 /* twi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = twi.c; sourceTree = "<group>"; };
 		88F23DDF1958EBC300F55181 /* twi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = twi.h; sourceTree = "<group>"; };
+		88F23DE1195A23F900F55181 /* status.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = status.c; sourceTree = "<group>"; };
+		88F23DE2195A23F900F55181 /* status.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = status.h; sourceTree = "<group>"; };
+		88F23DE3195A23F900F55181 /* switch.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = switch.c; sourceTree = "<group>"; };
+		88F23DE4195A23F900F55181 /* switch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = switch.h; sourceTree = "<group>"; };
+		88F23DE9195A253B00F55181 /* uart.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = uart.c; sourceTree = "<group>"; };
+		88F23DEA195A253B00F55181 /* uart.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = uart.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -27,9 +33,23 @@
 				885D42911950957E00C61E75 /* m */,
 				885D42921950957E00C61E75 /* main.c */,
 				885D42931950957E00C61E75 /* Makefile */,
+				88F23DE9195A253B00F55181 /* uart.c */,
+				88F23DEA195A253B00F55181 /* uart.h */,
 				88F23DDE1958EBC300F55181 /* twi.c */,
 				88F23DDF1958EBC300F55181 /* twi.h */,
+				88F23DE0195A23F900F55181 /* unused */,
 			);
+			sourceTree = "<group>";
+		};
+		88F23DE0195A23F900F55181 /* unused */ = {
+			isa = PBXGroup;
+			children = (
+				88F23DE1195A23F900F55181 /* status.c */,
+				88F23DE2195A23F900F55181 /* status.h */,
+				88F23DE3195A23F900F55181 /* switch.c */,
+				88F23DE4195A23F900F55181 /* switch.h */,
+			);
+			path = unused;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

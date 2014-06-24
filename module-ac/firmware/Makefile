@@ -21,7 +21,7 @@ DEVICE     = atmega644p
 CLOCK      = 1000000
 SERIAL = usb
 PROGRAMMER = -c avrispmkII -P $(SERIAL)
-OBJECTS    = main.o shell/commands.o shell/shell.o drivers/timer.o drivers/buffered_uart.o
+OBJECTS    = main.o shell/commands.o drivers/timer.o twi.o uart.o
 FUSES      = -U lfuse:w:0xE2:m
 #FUSES      = -U hfuse:w:0xd9:m -U lfuse:w:0x24:m
 # ATMega8 fuse bits used above (fuse bits for other devices are different!):

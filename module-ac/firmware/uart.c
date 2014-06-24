@@ -11,12 +11,12 @@
 
 void uart_init(uint16_t bauds) {
     
-    uint16_t ubrr = (((F_CPU) + 4UL * bauds) / (16UL * bauds) -1UL);
-    ubrr = 25;
-    UBRR0 = ubrr;
+    //uint16_t ubrr = (((F_CPU) + 4UL * bauds) / (16UL * bauds) -1UL);
+    // 9600 bauds @ 20 MHz
+    UBRR0 = 129;
     
     // Enable Tx and Rx
-    UCSR0B = (1 << RXEN0) | (1 << TXEN0);
+    UCSR0B = (1 << RXEN0)| (1 << TXEN0);
     // 8 bits, 1 stop bits
     UCSR0C = (0 << USBS0) | (3 << UCSZ00);
 }
@@ -31,22 +31,20 @@ uint8_t uart_poll(void) {
     return UDR0;
 }
 
-uint8_t uart_poll_echo(void) {
-    uint8_t c = uart_poll();
-    uart_write(c);
-    return c;
-}
-
-void uart_write_byte(uint8_t value) {
+void uart_write(uint8_t value) {
     while (!(UCSR0A & (1 << UDRE0)));
     
     UDR0 = value;
 }
 
-int uart_write_string(char* buffer, int size) {
-	int i;
-	for(i = 0; i<size;i++){
-		uart_write((uint8_t)buffer[i]);
-	}
-	return i;
+void uart_send(const char* str) {
+    
+    
+    int i = 0;
+    while (str[i]) {
+        uart_write(str[i]);
+        i++;
+    }
+    uart_write('\n');
+    uart_write('\r');
 }

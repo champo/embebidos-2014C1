@@ -17,11 +17,8 @@ bool uart_rx_ready(void);
 
 uint8_t uart_poll(void);
 
-uint8_t uart_poll_echo(void);
+void uart_write(uint8_t value);
 
-void uart_write_byte(uint8_t value);
-
-int uart_write_string(char* buffer, int size);
-
+void uart_send(const char* str);
 
 #endif

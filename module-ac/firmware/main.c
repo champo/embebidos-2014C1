@@ -11,7 +11,7 @@
 #include "common.h"
 #include "twi.h"
 
-#include "drivers/buffered_uart.h"
+//#include "drivers/buffered_uart.h"
 //#include "drivers/timer.h"
 
 //#include "shell/shell.h"
@@ -44,6 +44,9 @@
     uart_write((c&(1<<0))?'1':'0');
 }
 */
+
+uint8_t get();
+void put(uint8_t in);
 
 bool init = false;
 volatile bool overflow_done = false;
@@ -118,7 +121,7 @@ int main(void)
 
 //	init_timer_listener();
 	
-    buffered_uart_init(19200);
+//    buffered_uart_init(19200);
     
     //TIMER
 	//selecciona prescaler /1024
@@ -154,13 +157,13 @@ int main(void)
     //lo activo
 //    TCCR2B |= (0<<CS12) | (1<<CS11) | (0 <<CS10);
 //    
-//    twi_init(0x0F);
-//    
-//    void twi_register_get(uint8_t (*get)(void));
-//    
-//    void twi_register_put(void (*put)(uint8_t data));
-//    
-//    twi_enable_interrupt();
+    twi_init(0x0F);
+//
+    twi_register_get(get);
+//
+    twi_register_put(put);
+//
+    twi_enable_interrupt();
     /*
     
     //ADC
@@ -182,7 +185,7 @@ int main(void)
 // 	shell_start();
 
     while(1){
-        int i;
+//        int i;
         
 //        if(on){
 //        eeprom_busy_wait();
@@ -196,13 +199,13 @@ int main(void)
 //            on = true;
 //            eeprom_busy_wait();
 //        }
-        int aux = 0;
+//        int aux = 0;
 //        while(!overflow_done);
         
 //        overflow_done = false;
-        _delay_ms(1500);
-        aux = on?1:0;
-        put(aux);
+//        _delay_ms(1500);
+//        aux = on?1:0;
+//        put(aux);
         /*
         TCNT1 = 0;
         for(i=0;i<228;i++){ //volver a pos

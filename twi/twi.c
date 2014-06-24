@@ -182,7 +182,7 @@ static char str[20];
 
 ISR(TWI_vect, ISR_BLOCK) {
 
-    status_set(true);
+//    status_set(true);
     uart_send("TWI ISR");
     DUMP_ERROR();
     if (TW_STATUS == TW_SR_SLA_ACK) {
