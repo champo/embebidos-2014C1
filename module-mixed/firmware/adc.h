@@ -11,7 +11,9 @@
 
 #include <stdint.h>
 
-void adc_init(uint8_t mux);
+void adc_init(void);
+
+void adc_mode(uint8_t mux);
 
 uint16_t adc_read(void);
 

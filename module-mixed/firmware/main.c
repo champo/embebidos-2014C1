@@ -18,8 +18,8 @@
 #include <avr/io.h>
 #include "common.h"
 
-#define SWITCH_MASK (1 << 6)
-#define RELAY_MASK (1 << 7)
+#define SWITCH_MASK (1 << 7)
+#define RELAY_MASK (1 << 2)
 
 
 void set_light(bool);
@@ -40,9 +40,9 @@ static void put(uint8_t value) {
 void set_light(bool on)
 {
     if (on) {
-        PORTA |= RELAY_MASK;
+        PORTD |= RELAY_MASK;
     } else {
-        PORTA &= ~RELAY_MASK;
+        PORTD &= ~RELAY_MASK;
     }
 
     switch_toggle = on;
@@ -52,10 +52,12 @@ int main(void)
 {
     status_init();
 
-    // Ports PA6, PA7
+    // Ports PB6, PB7
     // Set relay port to out and switch port to in
-    DDRA = RELAY_MASK | (DDRA & (~SWITCH_MASK));
-    PORTA |= SWITCH_MASK;
+    DDRD = RELAY_MASK | (DDRD & (~SWITCH_MASK));
+    PORTD |= SWITCH_MASK;
+    
+    adc_init();
     
     // Normal mode
     TCCR1A = 0;
@@ -69,6 +71,7 @@ int main(void)
     twi_enable_interrupt();
     twi_register_get(get);
     twi_register_put(put);
+    
 
     // Turn relay on
     set_light(false);
@@ -78,7 +81,7 @@ int main(void)
 
     status_set(true);
     while (1) {
-        uint8_t pressed = !(PINA & SWITCH_MASK);
+        uint8_t pressed = !(PIND & SWITCH_MASK);
         if (pressed) {
             set_light(!switch_toggle);
 
@@ -97,17 +100,20 @@ ISR(TIMER1_OVF_vect) {
     // T = adc * (2.56 / 1024) * 100
     // T = adc * 256 / 1024
     // T = adc / 4
-    adc_init(2); // ADC2 as single
+    adc_mode(0); // ADC0 as single
     uint16_t read = adc_read();
     temperature = read / 4;
     sprintf(m, "%dºC (raw = %d)", temperature, read);
     
     uart_send(m);
     
-    adc_init(1 << 4); // ADC0 - ADC1 x 1 gain
+    
+    adc_mode(0x12); // ADC2 - ADC1 x 1 gain = 10010
     uint16_t value = adc_read();
-    int16_t converted = (-(value & (1 << 9))) | (value & (~(1 << 9)));
-    sprintf(m, "Read = %d", converted + 512);
+    
+    uint16_t negative = value & (1 << 9);
+    int16_t converted = -negative + (value & 0x1FF);
+    sprintf(m, "Read = %d -- sign %d", converted, negative);
     uart_send(m);
     
     light = (converted + 512) / 10;

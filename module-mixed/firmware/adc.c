@@ -13,12 +13,21 @@
 
 #include "common.h"
 
-void adc_init(uint8_t mux) {
-    // Using internal 2.56V, mux as input
-    ADMUX = (1 << REFS1) | (1 << REFS0) | (mux & 0x1F);
-    
+void adc_init(void) {
     // ADC enable, single mode, 128 divisor from CLK
     ADCSRA = BIT_MASK(1, 0, 0, 0, 0, 1, 1, 1);
+    
+    ADMUX = (1 << REFS1) | (1 << REFS0) | 0;
+}
+
+void adc_mode(uint8_t mux) {
+    
+    // Wait till current conversion ends just in case
+    while (ADCSRA & (1 << ADSC));
+    _delay_ms(1);
+    
+    // Using internal 2.56V, mux as input
+    ADMUX = (1 << REFS1) | (1 << REFS0) | (mux & 0x1F);
     
     // Needed to stabilize channel changes
     _delay_us(500);
