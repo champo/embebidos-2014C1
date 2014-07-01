@@ -18,6 +18,14 @@ app.config.from_object('config')
 
 db = SQLAlchemy(app)
 
+TYPE = {
+    'Iluminacion': 1,
+    'Persiana': 2,
+    'Aire': 3,
+    'Temperatura': 4,
+    'Lampara': 5,
+}
+
 ILUMINACION = [
     'Oscuridad total',
     'Muy oscuro',
@@ -154,10 +162,15 @@ def delete_rule_alias(rule_id):
     db.session.commit()
     return redirect('/')
 
-@app.route('/module/<int:module_id>', methods=['PUT'])
-def send_data(module_id):
+@app.route('/module/<int:id>', methods=['PUT'])
+def send_data(id):
+    output_module = Module.query.get(id)
     with serial:
-        serial.put(module_id, request.values['value'])
+        serial.put(
+            output_module.i2c_id,
+            TYPE[output_module.type],
+            request.values['value']
+        )
     return redirect('/')
 
 @app.route('/index.html')
@@ -173,7 +186,7 @@ def module_cron():
     current_datetime = datetime.now()
     for module in Module.query.all():
         with serial:
-            output = serial.get(module.i2c_id)
+            output = serial.get(module.i2c_id, TYPE[module.type])
 
         module.value = output
         module.last_update = current_datetime
@@ -195,17 +208,26 @@ def rule_cron():
 
                         output_module = Module.query.get(rule.output_module)
                         with serial:
-                            serial.put(output_module.i2c_id, rule.switch_to_value)
+                            serial.put(
+                                output_module.i2c_id,
+                                TYPE[output_module.type],
+                                rule.switch_to_value
+                            )
 
                         db.session.add(rule)
                         db.session.commit()
                         break
     return ''
 
-@app.route('/module/put/<int:i2c>', methods=['POST'])
-def send_to_module(i2c):
+@app.route('/module/put/<int:id>', methods=['POST'])
+def send_to_module(id):
+    output_module = Module.query.get(id)
     with serial:
-        serial.put(i2c, request.values['value'])
+        serial.put(
+            output_module.i2c_id,
+            TYPE[output_module.type],
+            request.values['value']
+        )
     return redirect('/')
 
 @app.route('/add', methods=['GET'])

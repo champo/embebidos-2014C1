@@ -38,7 +38,7 @@ class SerialInterface(object):
         finally:
             self.__serial = None
 
-    def get(self, address):
+    def get(self, address, type):
         with self.__lock:
 
             result = None
@@ -46,7 +46,7 @@ class SerialInterface(object):
                 serial = self.serial()
 
                 try:
-                    serial.write([address, 1])
+                    serial.write([address, 1, type])
                     serial.flush()
 
                     result = struct.unpack('B', serial.read(1))[0]
@@ -56,7 +56,7 @@ class SerialInterface(object):
 
         return result
 
-    def put(self, address, value):
+    def put(self, address, type, value):
 
         with self.__lock:
 
@@ -65,7 +65,7 @@ class SerialInterface(object):
                 serial = self.serial()
 
                 try:
-                    serial.write([address, 0, int(value)])
+                    serial.write([address, 0, type, int(value)])
                     serial.flush()
 
                     result = True
