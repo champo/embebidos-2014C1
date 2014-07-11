@@ -11,13 +11,13 @@
 
 #include "common.h"
 
-#define LUMINOSITY = 1;
-#define BLINDS_HEIGHT = 2;
-#define AIR_ON_OFF = 3;
-#define TEMPERATURE = 4;
-#define LIGHTS = 5;
-#define BLINDS_SPEED = 6;
-#define AIR_TEMPERATURE = 7;
+#define LUMINOSITY 1
+#define BLINDS_HEIGHT 2
+#define AIR_ON_OFF 3
+#define TEMPERATURE 4
+#define LIGHTS 5
+#define BLINDS_SPEED 6
+#define AIR_TEMPERATURE 7
 
 void twi_init(uint8_t address);
 
