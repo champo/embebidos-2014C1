@@ -6,6 +6,7 @@ import time
 from config import DEVICE
 SPEED = 9600
 
+
 def main(args):
     if len(args) != 2:
         return usage()
@@ -33,14 +34,15 @@ def main(args):
     print '%d' % (struct.unpack('B', out)[0])
     ser.close()
 
+
 def usage():
     print ('Usage: \n\t%s i2c_address type\n\t'
-        'Send a get to the module on the specified i2c address.\n'
-        'Types: Luminosity (1)\n'
-        '\tBlinds (2)\n'
-        '\tAir conditioner (3)\n'
-        '\tTemperature (4)\n'
-        '\tLamp (5)\n')
+           'Send a get to the module on the specified i2c address.\n'
+           'Types: Luminosity (1)\n'
+           '\tBlinds (2)\n'
+           '\tAir conditioner (3)\n'
+           '\tTemperature (4)\n'
+           '\tLamp (5)\n') % sys.argv([0])
 
 if __name__ == '__main__':
     main(sys.argv[1:])
