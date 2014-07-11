@@ -24,4 +24,12 @@ void twi_register_put(void (*put)(uint8_t type, uint8_t data));
 
 void twi_enable_interrupt(void);
 
+static uint8_t LUMINOSITY = 1;
+static uint8_t BLINDS_HEIGHT = 2;
+static uint8_t AIR_ON_OFF = 3;
+static uint8_t TEMPERATURE = 4;
+static uint8_t LIGHTS = 5;
+static uint8_t BLINDS_SPEED = 6;
+static uint8_t AIR_TEMPERATURE = 7;
+
 #endif

@@ -28,9 +28,6 @@ static uint8_t light = 0;
 static uint8_t temperature = 0;
 static uint8_t switch_toggle;
 
-static uint8_t LUMINOSITY = 1;
-static uint8_t TEMPERATURE = 4;
-static uint8_t LIGHTS = 5;
 
 static uint8_t get(uint8_t type) {
     if (type == LUMINOSITY) {
