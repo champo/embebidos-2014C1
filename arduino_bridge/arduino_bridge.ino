@@ -38,9 +38,6 @@ void loop()
     int cmd = Serial.read();
     int type = Serial.read();
 
-    Serial.write('a');
-    return;
-
     Wire.beginTransmission(address);
     Wire.write(cmd);
     Wire.write(type);

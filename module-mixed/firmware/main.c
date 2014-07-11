@@ -33,6 +33,8 @@ static uint8_t TEMPERATURE = 4;
 static uint8_t LIGHTS = 5;
 
 static uint8_t get(uint8_t type) {
+    return 0xFF;
+    /*
     if (type == LUMINOSITY) {
         return light;
     } else if (type == TEMPERATURE) {
@@ -42,6 +44,7 @@ static uint8_t get(uint8_t type) {
     } else {
         return 0xFF;
     }
+    */
 }
 
 static void put(uint8_t type, uint8_t value) {
