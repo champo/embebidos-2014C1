@@ -18,8 +18,8 @@
 #include <avr/io.h>
 #include "common.h"
 
-#define SWITCH_MASK (1 << 7)
-#define RELAY_MASK (1 << 2)
+#define SWITCH_MASK (1 << 4)
+#define RELAY_MASK (1 << 3)
 
 
 void set_light(bool);
@@ -63,9 +63,12 @@ int main(void)
 {
     status_init();
 
-    // Ports PB6, PB7
-    // Set relay port to out and switch port to in
-    DDRD = RELAY_MASK | (DDRD & (~SWITCH_MASK));
+    // Ports PD3
+    // Set relay port to out
+    DDRD |= RELAY_MASK;
+    
+    // Port PD2, to in
+    DDRD = (DDRD & (~SWITCH_MASK));
     PORTD |= SWITCH_MASK;
 
     adc_init();
@@ -87,7 +90,6 @@ int main(void)
 
     // Turn relay on
     set_light(false);
-    status_set(true);
 
     sei();
 
@@ -96,6 +98,7 @@ int main(void)
         uint8_t pressed = !(PIND & SWITCH_MASK);
         if (pressed) {
             set_light(!switch_toggle);
+            uart_send("Switch");
 
             _delay_ms(300);
         }
