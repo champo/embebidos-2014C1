@@ -28,13 +28,27 @@ static uint8_t light = 0;
 static uint8_t temperature = 0;
 static uint8_t switch_toggle;
 
-static uint8_t get(void) {
-    return temperature;
+static uint8_t LUMINOSITY = 1;
+static uint8_t TEMPERATURE = 4;
+static uint8_t LIGHTS = 5;
+
+static uint8_t get(uint8_t type) {
+    if (type == LUMINOSITY) {
+        return light;
+    } else if (type == TEMPERATURE) {
+        return temperature;
+    } else if (type == LIGHTS) {
+        return switch_toggle;
+    } else {
+        return 0xFF;
+    }
 }
 
-static void put(uint8_t value) {
-    status_set(value);
-    set_light(value ? true : false);
+static void put(uint8_t type, uint8_t value) {
+    if (type == LIGHTS) {
+        status_set(value);
+        set_light(value ? true : false);
+    }
 }
 
 void set_light(bool on)
@@ -56,9 +70,9 @@ int main(void)
     // Set relay port to out and switch port to in
     DDRD = RELAY_MASK | (DDRD & (~SWITCH_MASK));
     PORTD |= SWITCH_MASK;
-    
+
     adc_init();
-    
+
     // Normal mode
     TCCR1A = 0;
     // Prescale by 256, ~1.25 ints per second
@@ -71,7 +85,7 @@ int main(void)
     twi_enable_interrupt();
     twi_register_get(get);
     twi_register_put(put);
-    
+
 
     // Turn relay on
     set_light(false);
@@ -94,7 +108,7 @@ int main(void)
 
 ISR(TIMER1_OVF_vect) {
     char m[40];
-    
+
     // VRef is 2.56V
     // at T = 0, VOut = 0V. VOut scales at 10mV / ºC
     // T = adc * (2.56 / 1024) * 100
@@ -104,17 +118,17 @@ ISR(TIMER1_OVF_vect) {
     uint16_t read = adc_read();
     temperature = read / 4;
     sprintf(m, "%dºC (raw = %d)", temperature, read);
-    
+
     uart_send(m);
-    
-    
+
+
     adc_mode(0x12); // ADC2 - ADC1 x 1 gain = 10010
     uint16_t value = adc_read();
-    
+
     uint16_t negative = value & (1 << 9);
     int16_t converted = -negative + (value & 0x1FF);
     sprintf(m, "Read = %d -- sign %d", converted, negative);
     uart_send(m);
-    
+
     light = (converted + 512) / 10;
 }

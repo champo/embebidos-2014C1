@@ -255,7 +255,7 @@ ISR(TWI_vect, ISR_BLOCK) {
 
             if (command == 0x00) {
                 if (put_callback) {
-                    put_callback(TWDR);
+                    put_callback(type, TWDR);
                 }
             } else {
                 uart_send("WTF - Got DATA on GET");

@@ -14,13 +14,13 @@
 void twi_init(uint8_t address);
 
 // These two will be only to play around with two 644, since the real master won't use this code
-bool twi_put(uint8_t address, uint8_t data);
+bool twi_put(uint8_t address, uint8_t type, uint8_t data);
 
-bool twi_get(uint8_t address, uint8_t* data);
+bool twi_get(uint8_t address, uint8_t type, uint8_t* data);
 
-void twi_register_get(uint8_t (*get)(void));
+void twi_register_get(uint8_t (*get)(uint8_t type));
 
-void twi_register_put(void (*put)(uint8_t data));
+void twi_register_put(void (*put)(uint8_t type, uint8_t data));
 
 void twi_enable_interrupt(void);
 

@@ -3,7 +3,7 @@ import struct
 import sys
 import time
 
-DEVICE = '/dev/tty.usbmodem1421'
+from config import DEVICE
 SPEED = 9600
 
 def main(args):
