@@ -28,9 +28,9 @@
 
 #define EESIZE 256
 
-uint8_t get();
+uint8_t get(uint8_t type);
 void put(uint8_t in);
-void newPut(uint8_t in);
+void newPut(uint8_t type, uint8_t in);
 void loadSignal(char* sig, int size);
 
 bool init = false;
@@ -268,13 +268,13 @@ int main(void)
     return 0;
 }
 
-uint8_t get(){
+uint8_t get(uint8_t type){
     return temperatura;
 }
 
 
 
-void newPut(uint8_t in){
+void newPut(uint8_t type, uint8_t in){
     int k;
     switch(in){
         case OFF:
