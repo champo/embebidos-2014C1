@@ -2,16 +2,14 @@
 
 from datetime import datetime, timedelta
 import json
-import os
-import sys
 
 from flask import Flask, request, render_template, redirect
 from flask.ext.sqlalchemy import SQLAlchemy
 
-import config
+from config import DEVICE
 import serial_interface
 
-serial = serial_interface.SerialInterface('/dev/tty.usbmodem1421', 9600)
+serial = serial_interface.SerialInterface(DEVICE, 9600)
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -24,6 +22,7 @@ TYPE = {
     'Aire': 3,
     'Temperatura': 4,
     'Lampara': 5,
+    'Velocidad': 6,
 }
 
 ILUMINACION = [
@@ -35,6 +34,7 @@ ILUMINACION = [
     'Muy buena luz',
     'Luz de día'
 ]
+
 
 def time_since(value, default="hace un instante"):
     now = datetime.utcnow()
@@ -53,11 +53,12 @@ def time_since(value, default="hace un instante"):
             return "hace %d %s" % (period, singular if period == 1 else plural)
     return default
 
+
 class Module(db.Model):
 
     __tablename__ = 'module'
     id = db.Column(db.Integer, primary_key=True)
-    i2c_id = db.Column(db.Integer, unique=True)
+    i2c_id = db.Column(db.Integer)
     type = db.Column(db.String(50))
     name = db.Column(db.String(50), unique=True)
     value = db.Column(db.Integer)
@@ -65,12 +66,15 @@ class Module(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
     @property
     def desc(self):
         return '(%s) %s' % (self.type, self.name)
+
     @property
     def time_since(self):
         return time_since(self.last_update)
+
     @property
     def desc_value(self):
         if self.type == 'Aire':
@@ -84,8 +88,10 @@ class Module(db.Model):
         elif self.type == 'Persiana':
             return '%d%% cerrada' % self.value
         return '<sin datos>'
+
     def __repr__(self):
         return '<Module %r>' % (self.name)
+
 
 class Rule(db.Model):
 
@@ -106,12 +112,15 @@ class Rule(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
     @property
     def desc(self):
         return self.name
+
     @property
     def times(self):
         return '%s a %s' % (self.time_from, self.time_to)
+
     @property
     def sensors(self):
         self.sensor = Module.query.get(self.sensor_module)
@@ -119,16 +128,19 @@ class Rule(db.Model):
         return '%s controlando %s' % (
             self.sensor.desc, self.output.desc
         )
+
     def __repr__(self):
         return '<Rule %r>' % (self.name)
+
 
 @app.route('/modules', methods=['GET'])
 def modules():
     return json.dumps(Module.query.all())
 
+
 @app.route('/module', methods=['POST'])
 def add_module():
-    values = { key: request.values[key] for key in request.values}
+    values = {key: request.values[key] for key in request.values}
     try:
         values['last_update'] = datetime.fromtimestamp(float(values['last_update']))
     except:
@@ -138,17 +150,20 @@ def add_module():
     db.session.commit()
     return ''
 
+
 @app.route('/rules', methods=['GET'])
 def rules():
     return json.dumps(Rule.query.all())
 
+
 @app.route('/rule', methods=['POST'])
 def add_rule():
-    values = { key: request.values[key] for key in request.values }
+    values = {key: request.values[key] for key in request.values}
     rule = Rule(**values)
     db.session.add(rule)
     db.session.commit()
     return json.dumps(rule.as_dict())
+
 
 @app.route('/rule/<int:rule_id>', methods=['DELETE'])
 def delete_rule(rule_id):
@@ -156,11 +171,13 @@ def delete_rule(rule_id):
     db.session.commit()
     return redirect('/')
 
+
 @app.route('/rule/delete/<int:rule_id>', methods=['POST'])
 def delete_rule_alias(rule_id):
     db.session.delete(Rule.query.get(rule_id))
     db.session.commit()
     return redirect('/')
+
 
 @app.route('/module/<int:id>', methods=['PUT'])
 def send_data(id):
@@ -173,13 +190,14 @@ def send_data(id):
         )
     return redirect('/')
 
+
 @app.route('/index.html')
 @app.route('/')
 def homepage():
     return render_template('index.html',
-        sensors=Module.query.all(),
-        rules=Rule.query.all()
-    );
+                           sensors=Module.query.all(),
+                           rules=Rule.query.all())
+
 
 @app.route('/module_cron')
 def module_cron():
@@ -193,6 +211,7 @@ def module_cron():
         db.session.add(module)
         db.session.commit()
     return ''
+
 
 @app.route('/rule_cron')
 def rule_cron():
@@ -219,6 +238,7 @@ def rule_cron():
                         break
     return ''
 
+
 @app.route('/module/put/<int:id>', methods=['POST'])
 def send_to_module(id):
     output_module = Module.query.get(id)
@@ -230,17 +250,18 @@ def send_to_module(id):
         )
     return redirect('/')
 
+
 @app.route('/add', methods=['GET'])
 def add_rule_form():
     return render_template('add.html')
 
+
 @app.route('/add', methods=['POST'])
 def add_rule_process():
-    values = { key: request.values[key] for key in request.values }
+    values = {key: request.values[key] for key in request.values}
     values['less_than'] = values['less'] == 'Menor que'
     del values['less']
     rule = Rule(**values)
     db.session.add(rule)
     db.session.commit()
     return redirect('/')
-
