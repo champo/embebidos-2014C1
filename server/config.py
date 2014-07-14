@@ -4,6 +4,8 @@ _basedir = os.path.abspath(os.path.dirname(__file__))
 
 DEBUG = True
 
+DEVICE = '/dev/tty.usbmodem14241'
+
 SECRET_KEY = 'ophwgenp8rgbpuoaenpoirgnjaeopnjgpoaf'
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'test.db')

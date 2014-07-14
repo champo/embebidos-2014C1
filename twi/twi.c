@@ -24,9 +24,9 @@ static uint8_t extraFlags = 0;
 #define SEND_AND_WAIT(ack, flags) { SEND(ack, flags); WAIT(); }
 #define DUMP_ERROR() { char str[20]; sprintf(str, "Err = %x (%x)", TW_STATUS, 0xA); uart_send(str); }
 
-static uint8_t (*get_callback)(void) = 0;
+static uint8_t (*get_callback)(uint8_t) = 0;
 
-static void (*put_callback)(uint8_t) = 0;
+static void (*put_callback)(uint8_t, uint8_t) = 0;
 
 void twi_init(uint8_t address)
 {
@@ -96,12 +96,20 @@ begin:
     return true;
 }
 
-bool twi_put(uint8_t address, uint8_t data)
+bool twi_put(uint8_t address, uint8_t type, uint8_t data)
 {
     send_address(address, TW_WRITE);
 
     // Send a PUT packet
     TWDR = 0;
+    SEND_AND_WAIT(1, 0);
+
+    if (TW_STATUS != TW_MT_DATA_ACK) {
+        return false;
+    }
+
+    // Send the TYPE byte
+    TWDR = type;
     SEND_AND_WAIT(1, 0);
 
     if (TW_STATUS != TW_MT_DATA_ACK) {
@@ -121,7 +129,7 @@ bool twi_put(uint8_t address, uint8_t data)
     return true;
 }
 
-bool twi_get(uint8_t address, uint8_t* data)
+bool twi_get(uint8_t address, uint8_t type, uint8_t* data)
 {
     if (!send_address(address, TW_WRITE)) {
         uart_send("Send address failed");
@@ -132,6 +140,14 @@ bool twi_get(uint8_t address, uint8_t* data)
 
     // Send a GET packet
     TWDR = 1;
+    SEND_AND_WAIT(1, 0);
+
+    if (TW_STATUS != TW_MT_DATA_ACK) {
+        DUMP_ERROR();
+        return false;
+    }
+
+    TWDR = type;
     SEND_AND_WAIT(1, 0);
 
     if (TW_STATUS != TW_MT_DATA_ACK) {
@@ -166,17 +182,19 @@ bool twi_get(uint8_t address, uint8_t* data)
     return true;
 }
 
-void twi_register_get(uint8_t (*get)(void))
+void twi_register_get(uint8_t (*get)(uint8_t type))
 {
     get_callback = get;
 }
 
-void twi_register_put(void (*put)(uint8_t data))
+void twi_register_put(void (*put)(uint8_t type, uint8_t data))
 {
     put_callback = put;
 }
 
 static uint8_t command = 0xFF;
+
+static uint8_t type = 0xFF;
 
 static char str[20];
 
@@ -189,19 +207,28 @@ ISR(TWI_vect, ISR_BLOCK) {
 
         uart_send("Got my SLA+W");
         command = 0xFF;
+        type = 0xFF;
 
     } else if (TW_STATUS == TW_ST_SLA_ACK) {
 
         if (command == 0x0) {
             uart_send("Got into a ST with a PUT --- wwwwat");
-        } else {
+        } else if (command == 0x1) {
 
-            uart_send("Got a GET");
-            if (get_callback) {
-                TWDR = get_callback();
+            if (type == 0xFF) {
+
+                type = TWDR;
+                sprintf(str, "Got GET of type = %x", type);
+                uart_send(str);
+
             } else {
-                uart_send("No callback, sending 0xFF");
-                TWDR = 0xFF;
+
+                if (get_callback) {
+                    TWDR = get_callback(type);
+                } else {
+                    uart_send("No callback, sending 0xFF");
+                    TWDR = 0xFF;
+                }
             }
 
             // For the last data byte we need to set ack to 0
@@ -217,15 +244,22 @@ ISR(TWI_vect, ISR_BLOCK) {
             sprintf(str, "Got command = %x", command);
             uart_send(str);
 
-        } else if (command == 0x0) {
+        } else if (type == 0xFF) {
 
-            uart_send("Got a PUT");
-            if (put_callback) {
-                put_callback(TWDR);
-            }
+            type = TWDR;
+
+            sprintf(str, "Got type = %x", type);
+            uart_send(str);
 
         } else {
-            uart_send("WAAAAAAT -- Got a DATA ACK on a GET");
+
+            if (command == 0x00) {
+                if (put_callback) {
+                    put_callback(type, TWDR);
+                }
+            } else {
+                uart_send("WTF - Got DATA on GET");
+            }
         }
 
     } else if (TW_STATUS == TW_ST_DATA_ACK) {

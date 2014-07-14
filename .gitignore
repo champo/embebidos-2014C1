@@ -43,3 +43,8 @@ DerivedData
 Pods
 build/
 .irb-history
+
+# Python
+*.pyc
+.*~
+.*.sw[a-z]

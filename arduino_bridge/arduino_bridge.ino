@@ -17,41 +17,44 @@
 
 void setup()
 {
-  Serial.begin(9600); 
+  Serial.begin(9600);
   while (!Serial) {
     ; // wait for serial port to connect. Needed for Leonardo only
   }
-  
+
   Wire.begin(0xA);                // join i2c bus with address 0x
-  
-  pinMode(LED_BUILTIN, OUTPUT); 
+
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop()
 {
-    
-  if (Serial.available() >= 2) {
-    
+
+  if (Serial.available() >= 3) {
+
         digitalWrite(LED_BUILTIN, HIGH);
 
     int address = Serial.read();
     int cmd = Serial.read();
-    
-    Serial.write('a');
-    return;
- 
+    int type = Serial.read();
+
     Wire.beginTransmission(address);
     Wire.write(cmd);
+    Wire.write(type);
+
     if (cmd == 0x0) {
+
       while (Serial.available() == 0);
-      
-      Wire.write(Serial.read());   
+      Wire.write(Serial.read());
+
       Wire.endTransmission();
+
     } else {
+
       Wire.endTransmission(false);
       Wire.requestFrom(address, 1, true);
-      while (Wire.available() == 0);
 
+      while (Wire.available() == 0);
       Serial.write(Wire.read());
     }
 

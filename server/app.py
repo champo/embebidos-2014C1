@@ -18,6 +18,14 @@ app.config.from_object('config')
 
 db = SQLAlchemy(app)
 
+TYPE = {
+    'Iluminacion': 1,
+    'Persiana': 2,
+    'Aire': 3,
+    'Temperatura': 4,
+    'Lampara': 5,
+}
+
 ILUMINACION = [
     'Oscuridad total',
     'Muy oscuro',
@@ -74,7 +82,7 @@ class Module(db.Model):
         elif self.type == 'Iluminacion':
             return '%d / 100' % self.value
         elif self.type == 'Persiana':
-            return '%d%% abierta' % self.value
+            return '%d%% cerrada' % self.value
         return '<sin datos>'
     def __repr__(self):
         return '<Module %r>' % (self.name)
@@ -154,10 +162,15 @@ def delete_rule_alias(rule_id):
     db.session.commit()
     return redirect('/')
 
-@app.route('/module/<int:module_id>', methods=['PUT'])
-def send_data(module_id):
+@app.route('/module/<int:id>', methods=['PUT'])
+def send_data(id):
+    output_module = Module.query.get(id)
     with serial:
-        serial.put(module_id, request.values['value'])
+        serial.put(
+            output_module.i2c_id,
+            TYPE[output_module.type],
+            request.values['value']
+        )
     return redirect('/')
 
 @app.route('/index.html')
@@ -173,38 +186,48 @@ def module_cron():
     current_datetime = datetime.now()
     for module in Module.query.all():
         with serial:
-            output = serial.get(module.i2c_id)
+            output = serial.get(module.i2c_id, TYPE[module.type])
 
         module.value = output
         module.last_update = current_datetime
         db.session.add(module)
         db.session.commit()
-    return redirect('/')
+    return ''
 
 @app.route('/rule_cron')
 def rule_cron():
     current_datetime = datetime.now()
     current_time = current_datetime.strftime('%H:%M')
     for module in Module.query.all():
-        for rule in Rule.query.filter_by(output_module=module.id).order_by('priority'):
+        for rule in Rule.query.filter_by(sensor_module=module.id).order_by('priority'):
             if current_time >= rule.time_from and current_time < rule.time_to:
-                if ((rule.less_than and module.value < rule.value_threshold)
+                if ((rule.less_than and module.value <= rule.value_threshold)
                     or (not rule.less_than and module.value > rule.value_threshold)):
-                    if not rule.last_executed or current_datetime - rule.last_executed > timedelta(minutes=10):
+                    if True or not rule.last_executed or current_datetime - rule.last_executed > timedelta(minutes=10):
                         rule.last_executed = current_datetime
 
+                        output_module = Module.query.get(rule.output_module)
                         with serial:
-                            serial.put(module.i2c_id, rule.switch_to_value)
+                            serial.put(
+                                output_module.i2c_id,
+                                TYPE[output_module.type],
+                                rule.switch_to_value
+                            )
 
                         db.session.add(rule)
                         db.session.commit()
                         break
     return ''
 
-@app.route('/module/put/<int:i2c>', methods=['POST'])
-def send_to_module(i2c):
+@app.route('/module/put/<int:id>', methods=['POST'])
+def send_to_module(id):
+    output_module = Module.query.get(id)
     with serial:
-        serial.put(i2c, request.values['value'])
+        serial.put(
+            output_module.i2c_id,
+            TYPE[output_module.type],
+            request.values['value']
+        )
     return redirect('/')
 
 @app.route('/add', methods=['GET'])

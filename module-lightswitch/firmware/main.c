@@ -26,12 +26,18 @@ void set_light(bool);
 
 static uint8_t measurement;
 
-static uint8_t get(void) {
-    return measurement;
+static uint8_t get(uint8_t type) {
+    if (type == 1) {
+        return measurement;
+    }
+    return 0xFF;
 }
 
-static void put(uint8_t value) {
-    set_light(!!value);
+static void put(uint8_t type, uint8_t value) {
+    if (type == 1) {
+        status_set(value);
+        set_light(value ? true : false);
+    }
 }
 
 void set_light(bool on)
