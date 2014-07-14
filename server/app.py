@@ -253,7 +253,7 @@ def send_to_module(id):
 
 @app.route('/add', methods=['GET'])
 def add_rule_form():
-    return render_template('add.html')
+    return render_template('add.html', sensors=Module.query.all())
 
 
 @app.route('/add', methods=['POST'])

@@ -37,7 +37,11 @@
       <div class="form-group">
         <label class="col-sm-2 control-label" for="sensor_module">Módulo Sensor:</label>
         <div class="col-sm-10">
-          <input id="sensor_module" name="sensor_module" placeholder="" class="form-control" type="text">
+          <select id="sensor_module" name="sensor_module" class="form-control">
+          {% for sensor in sensors %}
+            <option value="{{ sensor.id }}">{{ sensor.desc }}</option>
+          {% endfor %}
+          </select>
           <p class="help-block">ingresar el id del sensor</p>
         </div>
       </div>
@@ -45,7 +49,11 @@
       <div class="form-group">
         <label class="col-sm-2 control-label" for="output_module">Módulo Control:</label>
         <div class="col-sm-10">
-          <input id="output_module" name="output_module" placeholder="" class="form-control" type="text">
+          <select id="output_module" name="output_module" class="form-control">
+          {% for sensor in sensors %}
+            <option value="{{ sensor.id }}">{{ sensor.desc }}</option>
+          {% endfor %}
+          </select>
           <p class="help-block">ingresar el id del controlador</p>
         </div>
       </div>
