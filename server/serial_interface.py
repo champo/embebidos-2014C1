@@ -46,6 +46,7 @@ class SerialInterface(object):
                 serial = self.serial()
 
                 try:
+                    print type
                     serial.write([address, 1, type])
                     serial.flush()
 

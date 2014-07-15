@@ -4,7 +4,7 @@ _basedir = os.path.abspath(os.path.dirname(__file__))
 
 DEBUG = True
 
-DEVICE = '/dev/tty.usbmodem14241'
+DEVICE = '/dev/tty.usbmodem1411'
 
 SECRET_KEY = 'ophwgenp8rgbpuoaenpoirgnjaeopnjgpoaf'
 

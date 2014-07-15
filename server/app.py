@@ -6,6 +6,7 @@ import json
 from flask import Flask, request, render_template, redirect
 from flask.ext.sqlalchemy import SQLAlchemy
 
+import time
 from config import DEVICE
 import serial_interface
 
@@ -84,7 +85,9 @@ class Module(db.Model):
         elif self.type == 'Temperatura':
             return '%d C' % self.value
         elif self.type == 'Iluminacion':
-            return '%d / 100' % self.value
+            return '%d%%' % self.value
+        elif self.type == 'Velocidad':
+            return '%d%%' % self.value
         elif self.type == 'Persiana':
             return '%d%% cerrada' % self.value
         return '<sin datos>'
@@ -207,9 +210,10 @@ def module_cron():
             output = serial.get(module.i2c_id, TYPE[module.type])
 
         module.value = output
-        module.last_update = current_datetime
+        module.last_update = current_datetime + timedelta(hours=3)
         db.session.add(module)
         db.session.commit()
+        time.sleep(1)
     return ''
 
 

@@ -23,6 +23,9 @@
 
       <h3>Estado de Sensores</h3>
       <p>Estos son los sensores instalados en su casa:</p>
+      <form role="form" action="/" method="GET" class="form-inline">
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+      </form>
       <table class="table">
         <thead>
           <tr>
@@ -42,6 +45,20 @@
                   <select class="form-control" name="value">
                     <option value="0">Apagar</option>
                     <option value="1">Encender</option>
+                  </select>
+                  <button type="submit" class="btn">Enviar</button>
+                </div>
+              </form>
+              {% endif %}
+              {% if sensor.type == 'Velocidad' %}
+              <form role="form" action="/module/put/{{ sensor.id }}" method="POST" class="form-inline">
+                <div class="form-group">
+                  <select class="form-control" name="value">
+                    <option value="20">20% Velocidad</option>
+                    <option value="40">40% Velocidad</option>
+                    <option value="60">60% Velocidad</option>
+                    <option value="80">80% Velocidad</option>
+                    <option value="100">100% Velocidad</option>
                   </select>
                   <button type="submit" class="btn">Enviar</button>
                 </div>
